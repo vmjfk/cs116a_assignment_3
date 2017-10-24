@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#define INT_MIN	-1*pow(2,32)
+#define INT_MIN	-1*pow(2,31)
 #define INT_MAX (pow(2,31) - 1) 
 
 Node* createNode(int node_id, void* item)				// creates and sets the vars for a node

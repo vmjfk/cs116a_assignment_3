@@ -3,94 +3,85 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "linked_list.h"
 
-using namespace std;
+#include <string.h>
+
+
 
 #define MAIN_WINDOW_WIDTH 400
 #define MAIN_WINDOW_HEIGHT 600
+#define WORLD_HEIGHT 100
 #define WORLD_WIDTH 100
-#define WORLD_HEIGHT 10
 #define WORLD_DEPTH 100
-#define TOTAL_VECTORS WORLD_WIDTH*WORLD_DEPTH
 
-typedef GLfloat Vectorf [3];
+struct Vertex3D
+{
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+};
+struct triangle
+{
+    int aindex;
+    int bindex;
+    int cindex;
+};
 
-Vectorf world[TOTAL_VECTORS]; 
+struct gobj
+{
+    LinkedList* vertices;
+    LinkedList* triangles;
+};
+
 GLdouble eyeX, eyeY, eyeZ, refX, refY, refZ, upX, upY, upZ;
 
-void buildWorld(int x, int y, int z)
+gobj obj; 
+
+void readObjectfromFile(const char* fn)
 {
-
-    for(int i = 0; i<z;i++)
+    
+    // reads the object from an obj file and  puts it in the  LinkedList
+    
+    char line[80];
+    float p1, p2, p3;
+    FILE *ifp, *ofp;
+    const char *mode = "r";
+    ifp = fopen(fn,mode);
+    if(ifp == NULL)
     {
-        for(int j = 0;j<x;j++)
-        {
-            world[j*x+i][0] = float(i);
-            world[j*x+i][1] = float(rand())/float(RAND_MAX);
-            world[j*x+i][2] = float(j);
-        }
-    }
+        printf("can't open file %s\n",fn);
+        return; 
+    } 
+ 
+    obj.vertices = createLinkedList();
+    obj.triangles = createLinkedList();
+    
 
-
-/*
-    int worldptr = 0;
-    GLfloat zptr, xptr = 0.0f; 
-    Vectorf verts[6];
-    while(zptr < z)
+    while(fscanf(ifp,"%s %f %f %f",line,&p1,&p2,&p3) != EOF)
     {
-        
-        // put in the first triangle vectors
- /*       verts[0][0] = xptr;
-        verts[0][1] = float(rand())/float(RAND_MAX);
-        printf("y = %f\n",verts[0][1]);
-        verts[0][2] = zptr;
-        verts[1][0] = xptr + 1;
-        verts[1][1] = float(rand())/float(RAND_MAX); //need to make this random Y
-        verts[1][2] = zptr;
-  
-        verts[2][0] = xptr;
-        verts[2][1] = float(rand())/float(RAND_MAX); //Y coordinate
-        verts[2][2] = zptr + 1;
- /*       
-        //second triangle
-        verts[3][0] = xptr + 1;
-        verts[3][1] = float(rand())/float(RAND_MAX); // Y
-        verts[3][2] = zptr + 1.0f;
-/*
-        verts[4][0] = xptr;
-        verts[4][1] = 0.0f; // Y
-        verts[4][2] = zptr;
-        verts[5][0] = xptr + 1.0;
-        verts[5][1] = 0.0f; // Y
-        verts[5][2] = zptr;
-
-        // put vectors in world
-        for(int i = 0;i<2;i++)
+        printf("%s %f %f %f\n",line,p1,p2,p3);
+        if(strcmp(line,"v") == 0)
         {
-            if(verts[i][0] >= 0.0f)
-            {
-                printf("x = %f, y = %f, z = %f\n",verts[i][0],verts[i][1],verts[i][2]);
-                world[worldptr][0] = verts[i][0];
-                world[worldptr][1] = verts[i][1];
-                world[worldptr][2] = verts[i][2];
-                worldptr++;
-            }
+            
         }
-
-        // increment xptr 
-        xptr++; 
-        
-        // set x and z ptr within bounds
-        if(xptr == x)
+        if(strcmp(line,"f") == 0)
         {
-            xptr = 0; 
-            zptr++;
+            printf("it's a face!\n");
+        }
+        if(strcmp(line,"f") != 0 && strcmp(line,"v") != 0)
+        {
+            printf("we dont' know what it is!\n");
         }
     }
     
-    printf("final worldptr = %d\n",worldptr);
-*/
+    fclose(ifp);
+
+//            char* item = strtok(line," ");
+    return; 
 }
+
+
 void loadWorld()
 {
     printf("loadWorld called \n");
@@ -99,7 +90,7 @@ void loadWorld()
     glColor3f(0.0,1.0,0.0);
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
     glBegin(GL_TRIANGLES);
-        
+/*    
         // fix this to add and re-add verts to make the strip
         for(int i=0;i<WORLD_DEPTH - 1;i++)
         {
@@ -133,7 +124,7 @@ void loadWorld()
             }
                 // printf("loading vertex %f,%f,%f\n",world[i][0],world[i][1],world[i][2]);
         }
-        
+*/     
     glEnd();
     glFlush();
 
@@ -279,10 +270,7 @@ void display()
 {
     printf("display called\n");
     glClear(GL_COLOR_BUFFER_BIT);
-    //glMatrixMode(GL_MODELVIEW);
-    //glLoadIdentity();
-    //triangle();
-    //buildWorld(WORLD_WIDTH,WORLD_HEIGHT,WORLD_DEPTH);
+
     loadWorld();
     glFlush();
     glutSwapBuffers();
@@ -305,7 +293,8 @@ void reshape(int width, int height)
 
 int main (int argc, char *argv[])
 {  
-    buildWorld(WORLD_WIDTH,WORLD_HEIGHT,WORLD_DEPTH);
+    readObjectfromFile("bunny.obj");
+    //buildWorld(WORLD_WIDTH,WORLD_HEIGHT,WORLD_DEPTH);
     //loadWorld();
 
 	glutInit (&argc, argv);
