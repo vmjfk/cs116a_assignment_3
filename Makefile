@@ -17,7 +17,7 @@ LFLAGS =
 LIBS = -lglut -lGL -lGLU -lX11 -lXmu -lXi -lm
 
 # define the C source files
-SRCS = kennedy_john_programming_assignment_3.c linked_list.c
+SRCS = kennedy_john_programming_assignment_3.c  
 
 # define the C object files 
 #
