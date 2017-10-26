@@ -7,8 +7,8 @@
 
 
 
-#define MAIN_WINDOW_WIDTH 800
-#define MAIN_WINDOW_HEIGHT 800
+#define MAIN_WINDOW_WIDTH 640
+#define MAIN_WINDOW_HEIGHT 480
 #define WORLD_HEIGHT 100
 #define WORLD_WIDTH 100
 #define WORLD_DEPTH 100
@@ -37,15 +37,14 @@ int vert_count;
 int face_count;
 int gl_mode;
 float r,g,b;
-
+ 
 void readObjectfromFile(const char* fn)
 {
     
     // reads the object from an obj file and  puts it in the  LinkedList
     vert_count = 0;
     face_count = 0;
-    
-
+ 
     char line[80];
     char magic;
     GLfloat p1, p2, p3;
@@ -60,8 +59,7 @@ void readObjectfromFile(const char* fn)
         return; 
     } 
     
-    int vert_count = 0;
-    
+
     while(fgets(line,80,ifp))
     {
         magic = line[0];
@@ -136,6 +134,32 @@ void reshow()
     gluLookAt(eyeX, eyeY, eyeZ, refX, refY, refZ, upX, upY, upZ);
     glutPostRedisplay();
 }
+void getBounds()
+{
+    float min_X = 10.0f;
+    float min_Y = 10.0f;
+    float min_Z = 10.0f;
+    float max_X = -10.0f;
+    float max_Y = -10.0f;
+    float max_Z = -10.0f;
+    
+    printf("vert_count = %d\n",vert_count);
+    for(int i=0;i<vert_count;i++)
+    {
+        
+        if(vertices[i].x > max_X)max_X = vertices[i].x;
+        if(vertices[i].y > max_Y)max_Y = vertices[i].y;
+        if(vertices[i].z > max_Z)max_Z = vertices[i].z;
+        if(vertices[i].x < min_X)min_X = vertices[i].x;
+        if(vertices[i].y < min_Y)min_Y = vertices[i].y;
+        if(vertices[i].z < min_Z)min_Z = vertices[i].z;
+    }
+    printf("min_X = %f, max_X = %f\n",min_X,max_X);
+    printf("min_Y = %f, max_Y = %f\n",min_Y,max_Y);
+    printf("min_Z = %f, max_Z = %f\n",min_Z,max_Z);
+
+        
+}
 
 void keyLeft(int key,int x,int  y)
 {
@@ -145,7 +169,6 @@ void keyLeft(int key,int x,int  y)
     float new_refX = refX*cos(onedeg) - refZ*sin(onedeg);
     refZ = new_refZ;
     refX = new_refX;
-
     reshow();
 
 }
@@ -222,17 +245,18 @@ void arrow_keys (int key, int x, int y)
 void init(void)
 {
     printf("init called\n");
+    printf("vert_count = %d\n",vert_count);
     glClearColor(0.0,0.0,0.0,0.0);
     //glClearDepth(1.0f);
     //glEnable(GL_DEPTH_TEST);
     //glDepthFunc(GL_LEQUAL);
     glMatrixMode(GL_MODELVIEW);
     eyeX = 0.0f;
-    eyeY = 0.1f;
-    eyeZ = -0.2f;
+    eyeY = 0.3f;
+    eyeZ = 1.0f;
     refX = 0.0f; 
-    refY = 0.0f; 
-    refZ = 1.0f; 
+    refY = 0.3f; 
+    refZ = 0.0f; 
     upX = 0.0f; 
     upY = 1.0f; 
     upZ = 0.0f;
@@ -300,6 +324,9 @@ void keyboard (unsigned char key, int x, int y)
             b = 1.0f;
             reshow();
             break;
+        case 'q':
+            getBounds();
+            break;
         default:
             break;
     }
@@ -338,7 +365,7 @@ int main (int argc, char *argv[])
 	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize (MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
 	glutInitWindowPosition (0,0);
-	glutCreateWindow ("Flying camera");
+	glutCreateWindow ("Bunny");
 
     init();	
     glutDisplayFunc (display);
