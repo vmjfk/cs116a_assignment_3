@@ -31,8 +31,6 @@ typedef struct Vertex3D vertex3d;
 
 vertex3d vertices[10000];
 face faces[10000];
-GLfloat light_diffuse[] = {1.0, 0.0, 0.0, 1.0};  /* Red diffuse light. */
-GLfloat light_position[] = {1.0, 1.0, 1.0, 0.0};  /* Infinite light location. */
 
 GLdouble eyeX, eyeY, eyeZ, refX, refY, refZ, upX, upY, upZ;
 int vert_count;
@@ -103,7 +101,7 @@ void loadWorld()
     printf("loadWorld called \n");
  
     glClear(GL_COLOR_BUFFER_BIT);
-//    glColor3f(r,g,b);
+    glColor3f(r,g,b);
     glPolygonMode(GL_FRONT_AND_BACK,gl_mode);
     glBegin(GL_TRIANGLES);
     printf("loading %d faces\n",face_count);
@@ -122,7 +120,7 @@ void loadWorld()
                 x = v.x;
                 y = v.y;
                 z = v.z;
-                glNormal3f(0.0f,0.0f,1.0f);
+ //               glNormal3f(0.0f,0.0f,1.0f);
                 glVertex3f(x,y,z);
             }
         }
@@ -167,6 +165,7 @@ void getBounds()
 void keyLeft(int key,int x,int  y)
 {
     float onedeg = 2*M_PI/360;
+    //float c = math.sqrt(eyeZ^2 + eyeX^2);
     
     float new_refZ = refZ*cos(onedeg) + refX*sin(onedeg);
     float new_refX = refX*cos(onedeg) - refZ*sin(onedeg);
@@ -250,14 +249,10 @@ void init(void)
     printf("init called\n");
     printf("vert_count = %d\n",vert_count);
     glClearColor(0.0,0.0,0.0,0.0);
-  /* Enable a single OpenGL light. */
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHTING);
+ 
 
   /* Use depth buffering for hidden surface elimination. */
-  glEnable(GL_DEPTH_TEST);
+   // glEnable(GL_DEPTH_TEST);
 
     //glClearDepth(1.0f);
 
