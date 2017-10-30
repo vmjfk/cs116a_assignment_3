@@ -30,7 +30,7 @@ SRCS = kennedy_john_programming_assignment_3.c
 OBJS = $(SRCS:.c=.o)
 
 # define the executable file 
-MAIN = kennedy_john_programming_assignment_3
+MAIN = kennedy_john_programming_assignment_3 
 
 #
 # The following part of the makefile is generic; it can be used to 
