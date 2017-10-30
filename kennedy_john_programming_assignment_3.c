@@ -167,10 +167,11 @@ void keyLeft(int key,int x,int  y)
     float onedeg = 2*M_PI/360;
     //float c = math.sqrt(eyeZ^2 + eyeX^2);
     
-    float new_refZ = refZ*cos(onedeg) + refX*sin(onedeg);
-    float new_refX = refX*cos(onedeg) - refZ*sin(onedeg);
-    refZ = new_refZ;
-    refX = new_refX;
+    float new_eyeZ = eyeZ*cos(onedeg) + eyeX*sin(onedeg);
+    float new_eyeX = eyeX*cos(onedeg) - eyeZ*sin(onedeg);
+    eyeZ = new_eyeZ;
+    eyeX = new_eyeX;
+    printf("new_eyeX = %f, new_eyeZ = %f\n",eyeX,eyeZ);
     reshow();
 
 }
@@ -179,29 +180,33 @@ void keyRight(int key,int x,int  y)
     float onedeg = -1*2*M_PI/360;
     printf("onedeg = %f\n",onedeg);
 
-    float new_refZ = refZ*cos(onedeg) + refX*sin(onedeg);
-    float new_refX = refX*cos(onedeg) - refZ*sin(onedeg);
-    printf("refX = %f, refZ = %f\n",refX,refZ);
-    printf("new_refX = %f, new_refZ = %f\n",new_refX,new_refZ);
-    
-    refZ = new_refZ;
-    refX = new_refX;
-    printf("refX = %f, refZ = %f\n",refX,refZ);
+    float new_eyeZ = eyeZ*cos(onedeg) + eyeX*sin(onedeg);
+    float new_eyeX = eyeX*cos(onedeg) - eyeZ*sin(onedeg);
+
+    printf("new_eyeX = %f, new_eyeZ = %f\n",eyeX,eyeZ);
+    eyeZ = new_eyeZ;
+    eyeX = new_eyeX;
 
     reshow();
 }
 void keyUp(int key,int x,int  y)
 {
- //   if(eyeZ >= WORLD_DEPTH * 0.8)return;
-    eyeZ += 0.1f;
-
+    float d = sqrt(pow(refZ - eyeZ,2.0f)+pow(refX - eyeX,2.0f));
+    float move = -0.01f;
+    float hyp = (d + move)/d;
+    eyeX *= hyp;
+    eyeZ *= hyp;
+    printf("new_eyeX = %f, new_eyeZ = %f\n",eyeX,eyeZ);
     reshow();
 }
 void keyDown(int key,int x,int  y)
 {
-  //  if(eyeZ <= 0.9)return;
-    eyeZ -= 0.1f;
- 
+    float d = sqrt(pow(refZ - eyeZ,2.0f)+pow(refX - eyeX,2.0f));
+    float move = 0.01f;
+    float hyp = (d + move)/d;
+    eyeX *= hyp;
+    eyeZ *= hyp;
+    printf("new_eyeX = %f, new_eyeZ = %f\n",eyeX,eyeZ);
     reshow();
 }
 void wireframe()
@@ -259,10 +264,10 @@ void init(void)
     //glDepthFunc(GL_LEQUAL);
     glMatrixMode(GL_MODELVIEW);
     eyeX = 0.0f;
-    eyeY = 0.0f;
-    eyeZ = 1.0f;
+    eyeY = 0.1f;
+    eyeZ = 0.5f;
     refX = 0.0f; 
-    refY = 0.0f; 
+    refY = 0.1f; 
     refZ = 0.0f; 
     upX = 0.0f; 
     upY = 1.0f; 
